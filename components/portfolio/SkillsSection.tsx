@@ -117,10 +117,12 @@ export default function SkillsSection() {
                       {categorySkills.map((skill) => (
                         <span
                           key={skill.id}
-                          className="group/skill relative px-3 py-1.5 text-sm bg-gray-800/50 border border-emerald-500/30 text-emerald-300 rounded-full font-medium hover:bg-emerald-500/20 hover:border-emerald-400 hover:text-emerald-200 transition-all duration-300 hover:scale-105 cursor-pointer shadow-sm hover:shadow-emerald-500/50"
+                          className="group/skill relative px-3 py-1.5 text-sm bg-gray-800/50 border border-emerald-500/30 rounded-full font-medium hover:bg-orange-500/20 hover:border-orange-400 transition-all duration-300 hover:scale-105 cursor-pointer shadow-sm hover:shadow-orange-500/50"
                         >
-                          <span className="relative z-10">{skill.name}</span>
-                          <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/0 via-emerald-500/10 to-emerald-500/0 opacity-0 group-hover/skill:opacity-100 rounded-full transition-opacity duration-300"></div>
+                          <span className="relative z-10 font-bold bg-gradient-to-r from-yellow-400 via-orange-400 to-red-500 bg-clip-text text-transparent group-hover/skill:from-yellow-300 group-hover/skill:via-orange-300 group-hover/skill:to-red-400 transition-all duration-300">
+                            {skill.name}
+                          </span>
+                          <div className="absolute inset-0 bg-gradient-to-r from-orange-500/0 via-orange-500/10 to-red-500/10 opacity-0 group-hover/skill:opacity-100 rounded-full transition-opacity duration-300"></div>
                         </span>
                       ))}
                     </div>

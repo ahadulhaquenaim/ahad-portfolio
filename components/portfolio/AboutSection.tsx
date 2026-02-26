@@ -28,7 +28,7 @@ export default function AboutSection() {
           </div>
         </div>
 
-        <div className="max-w-4xl mx-auto group animate-fade-in-up">
+        <div className="max-w-6xl mx-auto group animate-fade-in-up">
           {/* Glowing Border Effect */}
           <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 via-green-500 to-emerald-500 rounded-3xl blur opacity-50 group-hover:opacity-75 transition duration-1000 animate-pulse-glow"></div>
 
