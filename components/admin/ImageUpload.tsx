@@ -1,41 +1,131 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 
 export default function ImageUpload() {
   const [imageUrl, setImageUrl] = useState('');
   const [previewUrl, setPreviewUrl] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [fetching, setFetching] = useState(true);
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Fetch existing profile image on mount
+  useEffect(() => {
+    async function fetchProfileImage() {
+      try {
+        const res = await fetch('/api/profile-image');
+        const data = await res.json();
+        if (data?.imageUrl) {
+          setPreviewUrl(data.imageUrl);
+          setImageUrl(data.imageUrl);
+        }
+      } catch (error) {
+        console.error('Error fetching profile image:', error);
+      } finally {
+        setFetching(false);
+      }
+    }
+    fetchProfileImage();
+  }, []);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      // Create preview URL
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreviewUrl(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-      
-      // In production, you would upload to a server and get back a URL
-      // For now, we'll simulate this
-      console.log('File selected:', file.name);
+    if (!file) return;
+
+    setLoading(true);
+    try {
+      // Upload to Vercel Blob
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const uploadRes = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      const { url } = await uploadRes.json();
+
+      // Save URL to database
+      const saveRes = await fetch('/api/profile-image', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ imageUrl: url }),
+      });
+
+      if (saveRes.ok) {
+        setPreviewUrl(url);
+        setImageUrl(url);
+        alert('Profile image uploaded successfully!');
+      }
+    } catch (error) {
+      console.error('Upload error:', error);
+      alert('Failed to upload image');
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleUrlSubmit = (e: React.FormEvent) => {
+  const handleUrlSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setPreviewUrl(imageUrl);
-    // In production, this would save to database
-    console.log('Image URL saved:', imageUrl);
-    alert('Image URL saved successfully!');
+    if (!imageUrl) return;
+
+    setLoading(true);
+    try {
+      const res = await fetch('/api/profile-image', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ imageUrl }),
+      });
+
+      if (res.ok) {
+        setPreviewUrl(imageUrl);
+        alert('Image URL saved successfully!');
+      }
+    } catch (error) {
+      console.error('Error saving URL:', error);
+      alert('Failed to save image URL');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleDelete = () => {
-    setImageUrl('');
-    setPreviewUrl('');
-    alert('Image deleted successfully!');
+  const handleDelete = async () => {
+    setLoading(true);
+    try {
+      // Delete blob if it's a blob URL
+      if (previewUrl.includes('blob.vercel-storage.com')) {
+        await fetch('/api/upload', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url: previewUrl }),
+        });
+      }
+
+      // Delete from database
+      const res = await fetch('/api/profile-image', { method: 'DELETE' });
+
+      if (res.ok) {
+        setImageUrl('');
+        setPreviewUrl('');
+        alert('Image deleted successfully!');
+      }
+    } catch (error) {
+      console.error('Delete error:', error);
+      alert('Failed to delete image');
+    } finally {
+      setLoading(false);
+    }
   };
+
+  if (fetching) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Profile Image</h2>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -57,9 +147,10 @@ export default function ImageUpload() {
           </div>
           <button
             onClick={handleDelete}
-            className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
+            disabled={loading}
+            className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors disabled:opacity-50"
           >
-            Delete Image
+            {loading ? 'Deleting...' : 'Delete Image'}
           </button>
         </div>
       )}
@@ -83,7 +174,7 @@ export default function ImageUpload() {
           <div className="mt-4">
             <label htmlFor="file-upload" className="cursor-pointer">
               <span className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
-                Upload Image
+                {loading ? 'Uploading...' : 'Upload Image'}
               </span>
               <input
                 id="file-upload"
@@ -91,6 +182,7 @@ export default function ImageUpload() {
                 className="sr-only"
                 accept="image/*"
                 onChange={handleImageUpload}
+                disabled={loading}
               />
             </label>
           </div>
@@ -113,9 +205,10 @@ export default function ImageUpload() {
           </div>
           <button
             type="submit"
-            className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+            disabled={loading}
+            className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50"
           >
-            Save Image URL
+            {loading ? 'Saving...' : 'Save Image URL'}
           </button>
         </form>
       </div>

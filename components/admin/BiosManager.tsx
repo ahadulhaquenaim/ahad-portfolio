@@ -1,17 +1,67 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function BiosManager() {
   const [formData, setFormData] = useState({
-    title: 'Bio',
-    content: 'Write your bio here.',
+    title: '',
+    content: '',
   });
+  const [loading, setLoading] = useState(false);
+  const [fetching, setFetching] = useState(true);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Fetch existing bio on mount
+  useEffect(() => {
+    async function fetchBio() {
+      try {
+        const res = await fetch('/api/bio');
+        const data = await res.json();
+        if (data?.title) {
+          setFormData({ title: data.title, content: data.content });
+        }
+      } catch (error) {
+        console.error('Error fetching bio:', error);
+      } finally {
+        setFetching(false);
+      }
+    }
+    fetchBio();
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    alert('Bio updated successfully!');
+    setLoading(true);
+
+    try {
+      const res = await fetch('/api/bio', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      if (res.ok) {
+        alert('Bio updated successfully!');
+      } else {
+        alert('Failed to update bio');
+      }
+    } catch (error) {
+      console.error('Error saving bio:', error);
+      alert('Failed to update bio');
+    } finally {
+      setLoading(false);
+    }
   };
+
+  if (fetching) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Bio</h2>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -52,9 +102,10 @@ export default function BiosManager() {
         <div className="flex space-x-3">
           <button
             type="submit"
-            className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+            disabled={loading}
+            className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50"
           >
-            Update Bio
+            {loading ? 'Saving...' : 'Update Bio'}
           </button>
         </div>
       </form>

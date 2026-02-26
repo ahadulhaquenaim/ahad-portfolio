@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 
 interface Achievement {
@@ -12,15 +12,7 @@ interface Achievement {
 }
 
 export default function AchievementsManager() {
-  const [achievements, setAchievements] = useState<Achievement[]>([
-    {
-      id: '1',
-      title: 'Best Developer Award 2023',
-      description: 'Received for outstanding contributions to the project',
-      date: '2023-12',
-      imageUrl: '/placeholder.jpg',
-    },
-  ]);
+  const [achievements, setAchievements] = useState<Achievement[]>([]);
   const [isEditing, setIsEditing] = useState(false);
   const [currentAchievement, setCurrentAchievement] = useState<Achievement | null>(null);
   const [formData, setFormData] = useState({
@@ -30,55 +22,92 @@ export default function AchievementsManager() {
     imageUrl: '',
   });
   const [previewImage, setPreviewImage] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [fetching, setFetching] = useState(true);
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  useEffect(() => {
+    fetchAchievements();
+  }, []);
+
+  async function fetchAchievements() {
+    try {
+      const res = await fetch('/api/achievements');
+      const data = await res.json();
+      setAchievements(data);
+    } catch (error) {
+      console.error('Error fetching achievements:', error);
+    } finally {
+      setFetching(false);
+    }
+  }
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreviewImage(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-      console.log('Image file selected:', file.name);
+    if (!file) return;
+
+    setLoading(true);
+    try {
+      const uploadData = new FormData();
+      uploadData.append('file', file);
+
+      const res = await fetch('/api/upload', { method: 'POST', body: uploadData });
+      const { url } = await res.json();
+
+      setPreviewImage(url);
+      setFormData({ ...formData, imageUrl: url });
+    } catch (error) {
+      console.error('Upload error:', error);
+      alert('Failed to upload image');
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+    setLoading(true);
+
     const achievementData = {
       ...formData,
       imageUrl: previewImage || formData.imageUrl,
     };
 
-    if (currentAchievement) {
-      // Update existing achievement
-      setAchievements(achievements.map(achievement => 
-        achievement.id === currentAchievement.id 
-          ? { ...achievementData, id: currentAchievement.id }
-          : achievement
-      ));
-      alert('Achievement updated successfully!');
-    } else {
-      // Add new achievement
-      const newAchievement: Achievement = {
-        id: Date.now().toString(),
-        ...achievementData,
-      };
-      setAchievements([...achievements, newAchievement]);
-      alert('Achievement added successfully!');
-    }
+    try {
+      if (currentAchievement) {
+        const res = await fetch(`/api/achievements/${currentAchievement.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(achievementData),
+        });
 
-    // Reset form
-    setFormData({
-      title: '',
-      description: '',
-      date: '',
-      imageUrl: '',
-    });
-    setPreviewImage('');
-    setCurrentAchievement(null);
-    setIsEditing(false);
+        if (res.ok) {
+          const updated = await res.json();
+          setAchievements(achievements.map(a => a.id === currentAchievement.id ? updated : a));
+          alert('Achievement updated successfully!');
+        }
+      } else {
+        const res = await fetch('/api/achievements', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(achievementData),
+        });
+
+        if (res.ok) {
+          const newAchievement = await res.json();
+          setAchievements([newAchievement, ...achievements]);
+          alert('Achievement added successfully!');
+        }
+      }
+    } catch (error) {
+      console.error('Error saving achievement:', error);
+      alert('Failed to save achievement');
+    } finally {
+      setFormData({ title: '', description: '', date: '', imageUrl: '' });
+      setPreviewImage('');
+      setCurrentAchievement(null);
+      setIsEditing(false);
+      setLoading(false);
+    }
   };
 
   const handleEdit = (achievement: Achievement) => {
@@ -93,24 +122,47 @@ export default function AchievementsManager() {
     setIsEditing(true);
   };
 
-  const handleDelete = (id: string) => {
-    if (confirm('Are you sure you want to delete this achievement?')) {
-      setAchievements(achievements.filter(achievement => achievement.id !== id));
-      alert('Achievement deleted successfully!');
+  const handleDelete = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this achievement?')) return;
+
+    try {
+      const achievement = achievements.find(a => a.id === id);
+      if (achievement?.imageUrl?.includes('blob.vercel-storage.com')) {
+        await fetch('/api/upload', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url: achievement.imageUrl }),
+        });
+      }
+
+      const res = await fetch(`/api/achievements/${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        setAchievements(achievements.filter(a => a.id !== id));
+        alert('Achievement deleted successfully!');
+      }
+    } catch (error) {
+      console.error('Error deleting achievement:', error);
+      alert('Failed to delete achievement');
     }
   };
 
   const handleCancel = () => {
-    setFormData({
-      title: '',
-      description: '',
-      date: '',
-      imageUrl: '',
-    });
+    setFormData({ title: '', description: '', date: '', imageUrl: '' });
     setPreviewImage('');
     setCurrentAchievement(null);
     setIsEditing(false);
   };
+
+  if (fetching) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Achievements Management</h2>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -119,7 +171,6 @@ export default function AchievementsManager() {
         <p className="text-gray-600">Add, update, or delete your achievements</p>
       </div>
 
-      {/* Form Toggle Button */}
       {!isEditing && (
         <button
           onClick={() => setIsEditing(true)}
@@ -129,17 +180,14 @@ export default function AchievementsManager() {
         </button>
       )}
 
-      {/* Form */}
       {isEditing && (
         <form onSubmit={handleSubmit} className="bg-gray-50 p-6 rounded-lg space-y-4">
           <h3 className="text-lg font-semibold text-gray-900">
             {currentAchievement ? 'Edit Achievement' : 'Add New Achievement'}
           </h3>
-          
+
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Title *
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Title *</label>
             <input
               type="text"
               required
@@ -151,9 +199,7 @@ export default function AchievementsManager() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Description *
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Description *</label>
             <textarea
               required
               value={formData.description}
@@ -165,9 +211,7 @@ export default function AchievementsManager() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Date *
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Date *</label>
             <input
               type="month"
               required
@@ -177,55 +221,28 @@ export default function AchievementsManager() {
             />
           </div>
 
-          {/* Image Preview */}
           {previewImage && (
             <div className="mt-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Image Preview
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Image Preview</label>
               <div className="relative w-full h-64 rounded-lg overflow-hidden border-2 border-gray-200">
-                <Image
-                  src={previewImage}
-                  alt="Achievement preview"
-                  fill
-                  className="object-cover"
-                />
+                <Image src={previewImage} alt="Achievement preview" fill className="object-cover" />
               </div>
             </div>
           )}
 
-          {/* Image Upload */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Achievement Image
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Achievement Image</label>
             <div className="border-2 border-dashed border-gray-300 rounded-lg p-6">
               <div className="text-center">
-                <svg
-                  className="mx-auto h-12 w-12 text-gray-400"
-                  stroke="currentColor"
-                  fill="none"
-                  viewBox="0 0 48 48"
-                >
-                  <path
-                    d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                    strokeWidth={2}
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
+                <svg className="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                  <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
                 <div className="mt-4">
                   <label htmlFor="achievement-image-upload" className="cursor-pointer">
                     <span className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
-                      Upload Image
+                      {loading ? 'Uploading...' : 'Upload Image'}
                     </span>
-                    <input
-                      id="achievement-image-upload"
-                      type="file"
-                      className="sr-only"
-                      accept="image/*"
-                      onChange={handleImageUpload}
-                    />
+                    <input id="achievement-image-upload" type="file" className="sr-only" accept="image/*" onChange={handleImageUpload} disabled={loading} />
                   </label>
                 </div>
                 <p className="mt-2 text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
@@ -233,11 +250,8 @@ export default function AchievementsManager() {
             </div>
           </div>
 
-          {/* Or Image URL */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Or enter image URL
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Or enter image URL</label>
             <input
               type="url"
               value={formData.imageUrl}
@@ -253,22 +267,18 @@ export default function AchievementsManager() {
           <div className="flex space-x-3">
             <button
               type="submit"
-              className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+              disabled={loading}
+              className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50"
             >
-              {currentAchievement ? 'Update Achievement' : 'Add Achievement'}
+              {loading ? 'Saving...' : currentAchievement ? 'Update Achievement' : 'Add Achievement'}
             </button>
-            <button
-              type="button"
-              onClick={handleCancel}
-              className="px-6 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition-colors"
-            >
+            <button type="button" onClick={handleCancel} className="px-6 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition-colors">
               Cancel
             </button>
           </div>
         </form>
       )}
 
-      {/* Achievements List */}
       <div className="space-y-4">
         <h3 className="text-lg font-semibold text-gray-900">Your Achievements</h3>
         {achievements.length === 0 ? (
@@ -276,18 +286,10 @@ export default function AchievementsManager() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {achievements.map((achievement) => (
-              <div
-                key={achievement.id}
-                className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow"
-              >
+              <div key={achievement.id} className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow">
                 {achievement.imageUrl && (
                   <div className="relative w-full h-48">
-                    <Image
-                      src={achievement.imageUrl}
-                      alt={achievement.title}
-                      fill
-                      className="object-cover"
-                    />
+                    <Image src={achievement.imageUrl} alt={achievement.title} fill className="object-cover" />
                   </div>
                 )}
                 <div className="p-4">
@@ -298,22 +300,16 @@ export default function AchievementsManager() {
                         {new Date(achievement.date).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                       </p>
                     </div>
+                    <div className="flex space-x-2 ml-4">
+                      <button onClick={() => handleEdit(achievement)} className="px-3 py-1 text-sm bg-yellow-100 text-yellow-700 rounded hover:bg-yellow-200 transition-colors">
+                        Edit
+                      </button>
+                      <button onClick={() => handleDelete(achievement.id)} className="px-3 py-1 text-sm bg-red-100 text-red-700 rounded hover:bg-red-200 transition-colors">
+                        Delete
+                      </button>
+                    </div>
                   </div>
-                  <p className="text-gray-700 text-sm mb-4">{achievement.description}</p>
-                  <div className="flex space-x-2">
-                    <button
-                      onClick={() => handleEdit(achievement)}
-                      className="px-3 py-1 text-sm bg-yellow-100 text-yellow-700 rounded hover:bg-yellow-200 transition-colors"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDelete(achievement.id)}
-                      className="px-3 py-1 text-sm bg-red-100 text-red-700 rounded hover:bg-red-200 transition-colors"
-                    >
-                      Delete
-                    </button>
-                  </div>
+                  <p className="text-gray-700 text-sm mt-2">{achievement.description}</p>
                 </div>
               </div>
             ))}

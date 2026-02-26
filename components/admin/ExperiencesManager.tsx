@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface Experience {
   id: string;
@@ -14,18 +14,7 @@ interface Experience {
 }
 
 export default function ExperiencesManager() {
-  const [experiences, setExperiences] = useState<Experience[]>([
-    {
-      id: '1',
-      title: 'Senior Developer',
-      company: 'Tech Corp',
-      location: 'New York, NY',
-      startDate: '2022-01',
-      endDate: '2024-02',
-      current: false,
-      description: 'Led development of multiple projects using React and Node.js',
-    },
-  ]);
+  const [experiences, setExperiences] = useState<Experience[]>([]);
   const [isEditing, setIsEditing] = useState(false);
   const [currentExperience, setCurrentExperience] = useState<Experience | null>(null);
   const [formData, setFormData] = useState({
@@ -37,40 +26,64 @@ export default function ExperiencesManager() {
     current: false,
     description: '',
   });
+  const [loading, setLoading] = useState(false);
+  const [fetching, setFetching] = useState(true);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (currentExperience) {
-      // Update existing experience
-      setExperiences(experiences.map(exp => 
-        exp.id === currentExperience.id 
-          ? { ...formData, id: currentExperience.id }
-          : exp
-      ));
-      alert('Experience updated successfully!');
-    } else {
-      // Add new experience
-      const newExperience: Experience = {
-        id: Date.now().toString(),
-        ...formData,
-      };
-      setExperiences([...experiences, newExperience]);
-      alert('Experience added successfully!');
+  useEffect(() => {
+    fetchExperiences();
+  }, []);
+
+  async function fetchExperiences() {
+    try {
+      const res = await fetch('/api/experiences');
+      const data = await res.json();
+      setExperiences(data);
+    } catch (error) {
+      console.error('Error fetching experiences:', error);
+    } finally {
+      setFetching(false);
     }
+  }
 
-    // Reset form
-    setFormData({
-      title: '',
-      company: '',
-      location: '',
-      startDate: '',
-      endDate: '',
-      current: false,
-      description: '',
-    });
-    setCurrentExperience(null);
-    setIsEditing(false);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      if (currentExperience) {
+        const res = await fetch(`/api/experiences/${currentExperience.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData),
+        });
+
+        if (res.ok) {
+          const updated = await res.json();
+          setExperiences(experiences.map(exp => exp.id === currentExperience.id ? updated : exp));
+          alert('Experience updated successfully!');
+        }
+      } else {
+        const res = await fetch('/api/experiences', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData),
+        });
+
+        if (res.ok) {
+          const newExp = await res.json();
+          setExperiences([newExp, ...experiences]);
+          alert('Experience added successfully!');
+        }
+      }
+    } catch (error) {
+      console.error('Error saving experience:', error);
+      alert('Failed to save experience');
+    } finally {
+      setFormData({ title: '', company: '', location: '', startDate: '', endDate: '', current: false, description: '' });
+      setCurrentExperience(null);
+      setIsEditing(false);
+      setLoading(false);
+    }
   };
 
   const handleEdit = (experience: Experience) => {
@@ -87,26 +100,37 @@ export default function ExperiencesManager() {
     setIsEditing(true);
   };
 
-  const handleDelete = (id: string) => {
-    if (confirm('Are you sure you want to delete this experience?')) {
-      setExperiences(experiences.filter(exp => exp.id !== id));
-      alert('Experience deleted successfully!');
+  const handleDelete = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this experience?')) return;
+
+    try {
+      const res = await fetch(`/api/experiences/${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        setExperiences(experiences.filter(exp => exp.id !== id));
+        alert('Experience deleted successfully!');
+      }
+    } catch (error) {
+      console.error('Error deleting experience:', error);
+      alert('Failed to delete experience');
     }
   };
 
   const handleCancel = () => {
-    setFormData({
-      title: '',
-      company: '',
-      location: '',
-      startDate: '',
-      endDate: '',
-      current: false,
-      description: '',
-    });
+    setFormData({ title: '', company: '', location: '', startDate: '', endDate: '', current: false, description: '' });
     setCurrentExperience(null);
     setIsEditing(false);
   };
+
+  if (fetching) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Experiences Management</h2>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -115,7 +139,6 @@ export default function ExperiencesManager() {
         <p className="text-gray-600">Add, update, or delete your work experiences</p>
       </div>
 
-      {/* Form Toggle Button */}
       {!isEditing && (
         <button
           onClick={() => setIsEditing(true)}
@@ -125,18 +148,15 @@ export default function ExperiencesManager() {
         </button>
       )}
 
-      {/* Form */}
       {isEditing && (
         <form onSubmit={handleSubmit} className="bg-gray-50 p-6 rounded-lg space-y-4">
           <h3 className="text-lg font-semibold text-gray-900">
             {currentExperience ? 'Edit Experience' : 'Add New Experience'}
           </h3>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Job Title *
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Job Title *</label>
               <input
                 type="text"
                 required
@@ -148,9 +168,7 @@ export default function ExperiencesManager() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Company *
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Company *</label>
               <input
                 type="text"
                 required
@@ -162,9 +180,7 @@ export default function ExperiencesManager() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Location *
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Location *</label>
               <input
                 type="text"
                 required
@@ -176,9 +192,7 @@ export default function ExperiencesManager() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Start Date *
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Start Date *</label>
               <input
                 type="month"
                 required
@@ -189,9 +203,7 @@ export default function ExperiencesManager() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                End Date
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">End Date</label>
               <input
                 type="month"
                 value={formData.endDate}
@@ -216,9 +228,7 @@ export default function ExperiencesManager() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Description *
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Description *</label>
             <textarea
               required
               value={formData.description}
@@ -232,9 +242,10 @@ export default function ExperiencesManager() {
           <div className="flex space-x-3">
             <button
               type="submit"
-              className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+              disabled={loading}
+              className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50"
             >
-              {currentExperience ? 'Update Experience' : 'Add Experience'}
+              {loading ? 'Saving...' : currentExperience ? 'Update Experience' : 'Add Experience'}
             </button>
             <button
               type="button"
@@ -247,7 +258,6 @@ export default function ExperiencesManager() {
         </form>
       )}
 
-      {/* Experiences List */}
       <div className="space-y-4">
         <h3 className="text-lg font-semibold text-gray-900">Your Experiences</h3>
         {experiences.length === 0 ? (
@@ -255,17 +265,14 @@ export default function ExperiencesManager() {
         ) : (
           <div className="space-y-4">
             {experiences.map((experience) => (
-              <div
-                key={experience.id}
-                className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow"
-              >
+              <div key={experience.id} className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
                 <div className="flex justify-between items-start mb-4">
                   <div className="flex-1">
                     <h4 className="text-xl font-semibold text-gray-900">{experience.title}</h4>
                     <p className="text-lg text-gray-700 mt-1">{experience.company}</p>
                     <p className="text-sm text-gray-600 mt-1">{experience.location}</p>
                     <p className="text-sm text-gray-500 mt-2">
-                      {new Date(experience.startDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })} 
+                      {new Date(experience.startDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
                       {' - '}
                       {experience.current ? 'Present' : new Date(experience.endDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
                     </p>
