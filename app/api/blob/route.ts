@@ -1,7 +1,6 @@
-import { getDownloadUrl } from '@vercel/blob';
 import { NextRequest, NextResponse } from 'next/server';
 
-// GET - Get a temporary download URL for a private blob
+// GET - Redirect to the public blob URL
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -11,11 +10,10 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'No URL provided' }, { status: 400 });
     }
 
-    const downloadUrl = await getDownloadUrl(url);
-
-    return NextResponse.json({ downloadUrl });
+    // Public blobs are directly accessible, just return the URL
+    return NextResponse.json({ downloadUrl: url });
   } catch (error) {
-    console.error('Error getting download URL:', error);
-    return NextResponse.json({ error: 'Failed to get download URL' }, { status: 500 });
+    console.error('Error getting blob URL:', error);
+    return NextResponse.json({ error: 'Failed to get blob URL' }, { status: 500 });
   }
 }

@@ -44,10 +44,10 @@ export default function ResumeManager() {
 
     setLoading(true);
     try {
-      const formData = new FormData();
-      formData.append('file', file);
-
-      const uploadRes = await fetch('/api/upload', { method: 'POST', body: formData });
+      const uploadRes = await fetch(`/api/upload?filename=${encodeURIComponent(file.name)}`, {
+        method: 'POST',
+        body: file,
+      });
       const { url } = await uploadRes.json();
 
       const saveRes = await fetch('/api/resume', {

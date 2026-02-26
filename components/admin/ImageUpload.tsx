@@ -9,20 +9,6 @@ export default function ImageUpload() {
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
 
-  // Helper to get a displayable URL for private blobs
-  const resolveDisplayUrl = async (blobUrl: string): Promise<string> => {
-    if (blobUrl.includes('blob.vercel-storage.com')) {
-      try {
-        const res = await fetch(`/api/blob?url=${encodeURIComponent(blobUrl)}`);
-        const data = await res.json();
-        return data.downloadUrl || blobUrl;
-      } catch {
-        return blobUrl;
-      }
-    }
-    return blobUrl;
-  };
-
   // Fetch existing profile image on mount
   useEffect(() => {
     async function fetchProfileImage() {
@@ -31,8 +17,7 @@ export default function ImageUpload() {
         const data = await res.json();
         if (data?.imageUrl) {
           setImageUrl(data.imageUrl);
-          // Use displayUrl from API (already resolved) or resolve it
-          setPreviewUrl(data.displayUrl || data.imageUrl);
+          setPreviewUrl(data.imageUrl);
         }
       } catch (error) {
         console.error('Error fetching profile image:', error);
@@ -70,9 +55,7 @@ export default function ImageUpload() {
       });
 
       if (saveRes.ok) {
-        // Resolve private blob URL to a displayable download URL
-        const displayUrl = await resolveDisplayUrl(url);
-        setPreviewUrl(displayUrl);
+        setPreviewUrl(url);
         setImageUrl(url);
         alert('Profile image uploaded successfully!');
       }
