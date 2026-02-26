@@ -6,6 +6,8 @@ interface Skill {
   id: string;
   name: string;
   category: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export default function SkillsSection() {
@@ -38,6 +40,13 @@ export default function SkillsSection() {
     acc[skill.category].push(skill);
     return acc;
   }, {} as Record<string, Skill[]>);
+
+  // Sort categories by the oldest skill's creation date
+  const sortedCategories = Object.entries(groupedSkills).sort(([, skillsA], [, skillsB]) => {
+    const oldestA = new Date(skillsA[0].createdAt).getTime();
+    const oldestB = new Date(skillsB[0].createdAt).getTime();
+    return oldestA - oldestB; // Oldest first
+  });
 
   if (loading) {
     return (
@@ -83,7 +92,7 @@ export default function SkillsSection() {
           </div>
         ) : (
           <div className="grid gap-8 animate-fade-in-up">
-            {Object.entries(groupedSkills).map(([category, categorySkills], idx) => (
+            {sortedCategories.map(([category, categorySkills], idx) => (
               <div
                 key={category}
                 className="group relative"
