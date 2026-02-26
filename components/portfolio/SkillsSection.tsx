@@ -99,7 +99,7 @@ export default function SkillsSection() {
                   <div className="relative">
                     <div className="flex items-center gap-3 mb-6">
                       <div className="w-2 h-8 bg-gradient-to-b from-emerald-500 to-green-500 rounded-full"></div>
-                      <h3 className="text-2xl md:text-3xl font-bold text-emerald-400 capitalize">
+                      <h3 className="text-xl md:text-2xl font-bold text-emerald-400 capitalize">
                         {category}
                       </h3>
                     </div>
@@ -108,7 +108,7 @@ export default function SkillsSection() {
                       {categorySkills.map((skill) => (
                         <span
                           key={skill.id}
-                          className="group/skill relative px-5 py-2.5 bg-gray-800/50 border border-emerald-500/30 text-emerald-300 rounded-full font-semibold hover:bg-emerald-500/20 hover:border-emerald-400 hover:text-emerald-200 transition-all duration-300 hover:scale-105 cursor-pointer shadow-sm hover:shadow-emerald-500/50"
+                          className="group/skill relative px-3 py-1.5 text-sm bg-gray-800/50 border border-emerald-500/30 text-emerald-300 rounded-full font-medium hover:bg-emerald-500/20 hover:border-emerald-400 hover:text-emerald-200 transition-all duration-300 hover:scale-105 cursor-pointer shadow-sm hover:shadow-emerald-500/50"
                         >
                           <span className="relative z-10">{skill.name}</span>
                           <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/0 via-emerald-500/10 to-emerald-500/0 opacity-0 group-hover/skill:opacity-100 rounded-full transition-opacity duration-300"></div>
