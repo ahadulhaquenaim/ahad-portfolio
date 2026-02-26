@@ -8,11 +8,11 @@ export async function PUT(
 ) {
   try {
     const { id } = await params;
-    const { title, description, date, imageUrl } = await request.json();
+    const { title, description, date, imageUrl, category } = await request.json();
 
     const sport = await prisma.sport.update({
       where: { id },
-      data: { title, description, date, imageUrl: imageUrl || '' },
+      data: { title, description, date, imageUrl: imageUrl || '', category: category || 'Badminton' },
     });
 
     return NextResponse.json(sport);

@@ -9,6 +9,7 @@ interface Sport {
   description: string;
   date: string;
   imageUrl: string;
+  category: string;
 }
 
 export default function SportsSection() {
@@ -37,6 +38,17 @@ export default function SportsSection() {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
   };
+
+  // Group sports by category
+  const badmintonSports = sports.filter(sport => sport.category === 'Badminton');
+  const cricketSports = sports.filter(sport => sport.category === 'Cricket');
+  const footballSports = sports.filter(sport => sport.category === 'Football');
+
+  const categories = [
+    { name: 'Badminton', sports: badmintonSports, color: 'from-blue-500 to-cyan-500' },
+    { name: 'Cricket', sports: cricketSports, color: 'from-green-500 to-emerald-500' },
+    { name: 'Football', sports: footballSports, color: 'from-orange-500 to-red-500' },
+  ];
 
   if (loading) {
     return (
@@ -81,60 +93,81 @@ export default function SportsSection() {
             No sports memories added yet.
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 animate-fade-in-up">
-            {sports.map((sport, idx) => (
-              <div
-                key={sport.id}
-                className="group relative"
-                style={{ animationDelay: `${idx * 0.1}s` }}
-              >
-                {/* Glowing Border */}
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 via-orange-500 to-blue-500 rounded-2xl blur opacity-40 group-hover:opacity-60 transition duration-1000 animate-pulse-glow"></div>
-
-                <div className="relative bg-gray-900/90 backdrop-blur-xl border border-blue-500/20 rounded-2xl overflow-hidden shadow-2xl hover:shadow-blue-500/20 transition-all duration-300 group-hover:scale-105 cursor-pointer">
-                  {/* Inner Glow */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-orange-500/5"></div>
-
-                  {sport.imageUrl && (
-                    <div className="relative w-full h-64 bg-gray-800 border-b border-blue-500/20 overflow-hidden">
-                      <Image
-                        src={sport.imageUrl}
-                        alt={sport.title}
-                        fill
-                        className="object-contain group-hover:scale-110 transition-transform duration-500"
-                      />
-                      {/* Overlay on hover */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-blue-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-
-                      {/* Medal Icon */}
-                      <div className="absolute top-4 right-4 w-12 h-12 bg-blue-500/90 rounded-full flex items-center justify-center shadow-lg backdrop-blur-sm border border-blue-400/50">
-                        <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                        </svg>
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="relative p-6">
-                    <div className="flex items-start justify-between mb-3 gap-4">
-                      <h3 className="text-2xl font-bold text-blue-400 group-hover:text-blue-300 transition-colors flex-1">
-                        {sport.title}
-                      </h3>
-                      <span className="text-sm text-gray-400 whitespace-nowrap flex items-center gap-1 bg-gray-800/50 px-3 py-1 rounded-full border border-blue-500/20">
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
-                        {formatDate(sport.date)}
-                      </span>
-                    </div>
-
-                    <div className="h-1 w-16 bg-gradient-to-r from-blue-500 to-orange-500 rounded-full mb-4"></div>
-
-                    <p className="text-gray-300 leading-relaxed">
-                      {sport.description}
-                    </p>
-                  </div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {categories.map((category, categoryIdx) => (
+              <div key={category.name} className="space-y-6">
+                {/* Category Header */}
+                <div className="text-center mb-8">
+                  <h3 className={`text-3xl font-bold bg-gradient-to-r ${category.color} bg-clip-text text-transparent mb-2`}>
+                    {category.name}
+                  </h3>
+                  <div className={`h-1 w-24 mx-auto bg-gradient-to-r ${category.color} rounded-full`}></div>
                 </div>
+
+                {/* Sports in this category */}
+                {category.sports.length === 0 ? (
+                  <div className="text-center text-gray-500 py-8">
+                    No {category.name.toLowerCase()} memories yet.
+                  </div>
+                ) : (
+                  <div className="space-y-6">
+                    {category.sports.map((sport, idx) => (
+                      <div
+                        key={sport.id}
+                        className="group relative"
+                        style={{ animationDelay: `${(categoryIdx * 0.1) + (idx * 0.1)}s` }}
+                      >
+                        {/* Glowing Border */}
+                        <div className={`absolute -inset-0.5 bg-gradient-to-r ${category.color} rounded-2xl blur opacity-40 group-hover:opacity-60 transition duration-1000 animate-pulse-glow`}></div>
+
+                        <div className="relative bg-gray-900/90 backdrop-blur-xl border border-blue-500/20 rounded-2xl overflow-hidden shadow-2xl hover:shadow-blue-500/20 transition-all duration-300 group-hover:scale-105 cursor-pointer">
+                          {/* Inner Glow */}
+                          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-orange-500/5"></div>
+
+                          {sport.imageUrl && (
+                            <div className="relative w-full h-48 bg-gray-800 border-b border-blue-500/20 overflow-hidden">
+                              <Image
+                                src={sport.imageUrl}
+                                alt={sport.title}
+                                fill
+                                className="object-contain group-hover:scale-110 transition-transform duration-500"
+                              />
+                              {/* Overlay on hover */}
+                              <div className="absolute inset-0 bg-gradient-to-t from-blue-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+                              {/* Medal Icon */}
+                              <div className={`absolute top-4 right-4 w-10 h-10 bg-gradient-to-r ${category.color} rounded-full flex items-center justify-center shadow-lg backdrop-blur-sm border border-white/50`}>
+                                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                </svg>
+                              </div>
+                            </div>
+                          )}
+
+                          <div className="relative p-5">
+                            <div className="mb-3">
+                              <h4 className={`text-xl font-bold bg-gradient-to-r ${category.color} bg-clip-text text-transparent mb-2`}>
+                                {sport.title}
+                              </h4>
+                              <span className="text-xs text-gray-400 flex items-center gap-1">
+                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                                {formatDate(sport.date)}
+                              </span>
+                            </div>
+
+                            <div className={`h-0.5 w-12 bg-gradient-to-r ${category.color} rounded-full mb-3`}></div>
+
+                            <p className="text-gray-300 text-sm leading-relaxed">
+                              {sport.description}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             ))}
           </div>

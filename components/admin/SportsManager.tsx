@@ -9,6 +9,7 @@ interface Sport {
   description: string;
   date: string;
   imageUrl: string;
+  category: string;
 }
 
 export default function SportsManager() {
@@ -20,6 +21,7 @@ export default function SportsManager() {
     description: '',
     date: '',
     imageUrl: '',
+    category: 'Badminton',
   });
   const [previewImage, setPreviewImage] = useState('');
   const [loading, setLoading] = useState(false);
@@ -101,7 +103,7 @@ export default function SportsManager() {
       console.error('Error saving sport:', error);
       alert('Failed to save sport');
     } finally {
-      setFormData({ title: '', description: '', date: '', imageUrl: '' });
+      setFormData({ title: '', description: '', date: '', imageUrl: '', category: 'Badminton' });
       setPreviewImage('');
       setCurrentSport(null);
       setIsEditing(false);
@@ -116,6 +118,7 @@ export default function SportsManager() {
       description: sport.description,
       date: sport.date,
       imageUrl: sport.imageUrl,
+      category: sport.category || 'Badminton',
     });
     setPreviewImage(sport.imageUrl);
     setIsEditing(true);
@@ -146,7 +149,7 @@ export default function SportsManager() {
   };
 
   const handleCancel = () => {
-    setFormData({ title: '', description: '', date: '', imageUrl: '' });
+    setFormData({ title: '', description: '', date: '', imageUrl: '', category: 'Badminton' });
     setPreviewImage('');
     setCurrentSport(null);
     setIsEditing(false);
@@ -218,6 +221,20 @@ export default function SportsManager() {
               onChange={(e) => setFormData({ ...formData, date: e.target.value })}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Category *</label>
+            <select
+              required
+              value={formData.category}
+              onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              <option value="Badminton">Badminton</option>
+              <option value="Cricket">Cricket</option>
+              <option value="Football">Football</option>
+            </select>
           </div>
 
           {previewImage && (
@@ -298,6 +315,9 @@ export default function SportsManager() {
                       <p className="text-sm text-gray-500 mt-1">
                         {new Date(sport.date).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                       </p>
+                      <span className="inline-block mt-2 px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-700">
+                        {sport.category}
+                      </span>
                     </div>
                     <div className="flex space-x-2 ml-4">
                       <button onClick={() => handleEdit(sport)} className="px-3 py-1 text-sm bg-yellow-100 text-yellow-700 rounded hover:bg-yellow-200 transition-colors">

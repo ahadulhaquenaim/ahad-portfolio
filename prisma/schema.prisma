@@ -78,6 +78,7 @@ model Sport {
   title       String
   description String   @db.Text
   date        String
+  category    String   @default("Badminton") // Badminton, Cricket, Football
   imageUrl    String   @default("") // Vercel Blob URL
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

@@ -17,10 +17,10 @@ export async function GET() {
 // POST - Create a new sport
 export async function POST(request: NextRequest) {
   try {
-    const { title, description, date, imageUrl } = await request.json();
+    const { title, description, date, imageUrl, category } = await request.json();
 
     const sport = await prisma.sport.create({
-      data: { title, description, date, imageUrl: imageUrl || '' },
+      data: { title, description, date, imageUrl: imageUrl || '', category: category || 'Badminton' },
     });
 
     return NextResponse.json(sport, { status: 201 });
