@@ -81,7 +81,7 @@ export default function AchievementsSection() {
             No achievements added yet.
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 animate-fade-in-up">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 animate-fade-in-up">
             {achievements.map((achievement, idx) => (
               <div
                 key={achievement.id}
@@ -96,12 +96,12 @@ export default function AchievementsSection() {
                   <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 via-transparent to-green-500/5"></div>
 
                   {achievement.imageUrl && (
-                    <div className="relative w-full h-56 bg-gray-800 border-b border-emerald-500/20 overflow-hidden">
+                    <div className="relative w-full h-64 bg-gray-800 border-b border-emerald-500/20 overflow-hidden">
                       <Image
                         src={achievement.imageUrl}
                         alt={achievement.title}
                         fill
-                        className="object-cover group-hover:scale-110 transition-transform duration-500"
+                        className="object-contain group-hover:scale-110 transition-transform duration-500"
                       />
                       {/* Overlay on hover */}
                       <div className="absolute inset-0 bg-gradient-to-t from-emerald-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
