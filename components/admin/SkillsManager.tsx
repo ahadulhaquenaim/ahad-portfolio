@@ -42,7 +42,7 @@ export default function SkillsManager() {
     }
 
     // Reset form
-    setFormData({ name: '', level: 'Beginner', category: '' });
+    setFormData({ name: '', category: '' });
     setCurrentSkill(null);
     setIsEditing(false);
   };
