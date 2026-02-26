@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useToast } from '@/components/ui/Toast';
 
 interface Skill {
   id: string;
@@ -9,6 +10,7 @@ interface Skill {
 }
 
 export default function SkillsManager() {
+  const toast = useToast();
   const [skills, setSkills] = useState<Skill[]>([]);
   const [isEditing, setIsEditing] = useState(false);
   const [currentSkill, setCurrentSkill] = useState<Skill | null>(null);
@@ -51,7 +53,7 @@ export default function SkillsManager() {
         if (res.ok) {
           const updated = await res.json();
           setSkills(skills.map(s => s.id === currentSkill.id ? updated : s));
-          alert('Skill updated successfully!');
+          toast.success('Skill updated!', 'Your changes have been saved.');
         }
       } else {
         const res = await fetch('/api/skills', {
@@ -63,12 +65,12 @@ export default function SkillsManager() {
         if (res.ok) {
           const newSkill = await res.json();
           setSkills([newSkill, ...skills]);
-          alert('Skill added successfully!');
+          toast.success('Skill added!', 'Your new skill is now live.');
         }
       }
     } catch (error) {
       console.error('Error saving skill:', error);
-      alert('Failed to save skill');
+      toast.error('Save failed', 'Could not save the skill. Please try again.');
     } finally {
       setFormData({ name: '', category: '' });
       setCurrentSkill(null);
@@ -90,11 +92,11 @@ export default function SkillsManager() {
       const res = await fetch(`/api/skills/${id}`, { method: 'DELETE' });
       if (res.ok) {
         setSkills(skills.filter(skill => skill.id !== id));
-        alert('Skill deleted successfully!');
+        toast.success('Skill deleted', 'The skill has been removed.');
       }
     } catch (error) {
       console.error('Error deleting skill:', error);
-      alert('Failed to delete skill');
+      toast.error('Delete failed', 'Could not delete the skill. Please try again.');
     }
   };
 

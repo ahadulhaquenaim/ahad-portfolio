@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { useToast } from '@/components/ui/Toast';
 
 interface Achievement {
   id: string;
@@ -12,6 +13,7 @@ interface Achievement {
 }
 
 export default function AchievementsManager() {
+  const toast = useToast();
   const [achievements, setAchievements] = useState<Achievement[]>([]);
   const [isEditing, setIsEditing] = useState(false);
   const [currentAchievement, setCurrentAchievement] = useState<Achievement | null>(null);
@@ -57,7 +59,7 @@ export default function AchievementsManager() {
       setFormData({ ...formData, imageUrl: url });
     } catch (error) {
       console.error('Upload error:', error);
-      alert('Failed to upload image');
+      toast.error('Upload failed', 'Could not upload image. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -83,7 +85,7 @@ export default function AchievementsManager() {
         if (res.ok) {
           const updated = await res.json();
           setAchievements(achievements.map(a => a.id === currentAchievement.id ? updated : a));
-          alert('Achievement updated successfully!');
+          toast.success('Achievement updated!', 'Your changes have been saved.');
         }
       } else {
         const res = await fetch('/api/achievements', {
@@ -95,12 +97,12 @@ export default function AchievementsManager() {
         if (res.ok) {
           const newAchievement = await res.json();
           setAchievements([newAchievement, ...achievements]);
-          alert('Achievement added successfully!');
+          toast.success('Achievement added!', 'Your new achievement is now live.');
         }
       }
     } catch (error) {
       console.error('Error saving achievement:', error);
-      alert('Failed to save achievement');
+      toast.error('Save failed', 'Could not save the achievement. Please try again.');
     } finally {
       setFormData({ title: '', description: '', date: '', imageUrl: '' });
       setPreviewImage('');
@@ -138,11 +140,11 @@ export default function AchievementsManager() {
       const res = await fetch(`/api/achievements/${id}`, { method: 'DELETE' });
       if (res.ok) {
         setAchievements(achievements.filter(a => a.id !== id));
-        alert('Achievement deleted successfully!');
+        toast.success('Achievement deleted', 'The achievement has been removed.');
       }
     } catch (error) {
       console.error('Error deleting achievement:', error);
-      alert('Failed to delete achievement');
+      toast.error('Delete failed', 'Could not delete the achievement. Please try again.');
     }
   };
 

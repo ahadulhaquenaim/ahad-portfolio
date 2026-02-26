@@ -1,8 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useToast } from '@/components/ui/Toast';
 
 export default function BiosManager() {
+  const toast = useToast();
   const [formData, setFormData] = useState({
     title: '',
     content: '',
@@ -40,13 +42,13 @@ export default function BiosManager() {
       });
 
       if (res.ok) {
-        alert('Bio updated successfully!');
+        toast.success('Bio updated!', 'Your bio has been saved successfully.');
       } else {
-        alert('Failed to update bio');
+        toast.error('Update failed', 'Could not update the bio. Please try again.');
       }
     } catch (error) {
       console.error('Error saving bio:', error);
-      alert('Failed to update bio');
+      toast.error('Update failed', 'Could not update the bio. Please try again.');
     } finally {
       setLoading(false);
     }

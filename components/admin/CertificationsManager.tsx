@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { useToast } from '@/components/ui/Toast';
 
 interface Certification {
   id: string;
@@ -13,6 +14,7 @@ interface Certification {
 }
 
 export default function CertificationsManager() {
+  const toast = useToast();
   const [certifications, setCertifications] = useState<Certification[]>([]);
   const [isEditing, setIsEditing] = useState(false);
   const [currentCertification, setCurrentCertification] = useState<Certification | null>(null);
@@ -59,7 +61,7 @@ export default function CertificationsManager() {
       setFormData({ ...formData, imageUrl: url });
     } catch (error) {
       console.error('Upload error:', error);
-      alert('Failed to upload image');
+      toast.error('Upload failed', 'Could not upload image. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -85,7 +87,7 @@ export default function CertificationsManager() {
         if (res.ok) {
           const updated = await res.json();
           setCertifications(certifications.map(c => c.id === currentCertification.id ? updated : c));
-          alert('Certification updated successfully!');
+          toast.success('Certification updated!', 'Your changes have been saved.');
         }
       } else {
         const res = await fetch('/api/certifications', {
@@ -97,12 +99,12 @@ export default function CertificationsManager() {
         if (res.ok) {
           const newCert = await res.json();
           setCertifications([newCert, ...certifications]);
-          alert('Certification added successfully!');
+          toast.success('Certification added!', 'Your new certification is now live.');
         }
       }
     } catch (error) {
       console.error('Error saving certification:', error);
-      alert('Failed to save certification');
+      toast.error('Save failed', 'Could not save the certification. Please try again.');
     } finally {
       setFormData({ title: '', issuer: '', date: '', credentialUrl: '', imageUrl: '' });
       setPreviewImage('');
@@ -141,11 +143,11 @@ export default function CertificationsManager() {
       const res = await fetch(`/api/certifications/${id}`, { method: 'DELETE' });
       if (res.ok) {
         setCertifications(certifications.filter(c => c.id !== id));
-        alert('Certification deleted successfully!');
+        toast.success('Certification deleted', 'The certification has been removed.');
       }
     } catch (error) {
       console.error('Error deleting certification:', error);
-      alert('Failed to delete certification');
+      toast.error('Delete failed', 'Could not delete the certification. Please try again.');
     }
   };
 

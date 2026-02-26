@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { useToast } from '@/components/ui/Toast';
 
 interface Sport {
   id: string;
@@ -13,6 +14,7 @@ interface Sport {
 }
 
 export default function SportsManager() {
+  const toast = useToast();
   const [sports, setSports] = useState<Sport[]>([]);
   const [isEditing, setIsEditing] = useState(false);
   const [currentSport, setCurrentSport] = useState<Sport | null>(null);
@@ -58,7 +60,7 @@ export default function SportsManager() {
       setFormData({ ...formData, imageUrl: url });
     } catch (error) {
       console.error('Upload error:', error);
-      alert('Failed to upload image');
+      toast.error('Upload failed', 'Could not upload image. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -84,7 +86,7 @@ export default function SportsManager() {
         if (res.ok) {
           const updated = await res.json();
           setSports(sports.map(s => s.id === currentSport.id ? updated : s));
-          alert('Sport updated successfully!');
+          toast.success('Sport updated!', 'Your changes have been saved.');
         }
       } else {
         const res = await fetch('/api/sports', {
@@ -96,12 +98,12 @@ export default function SportsManager() {
         if (res.ok) {
           const newSport = await res.json();
           setSports([newSport, ...sports]);
-          alert('Sport added successfully!');
+          toast.success('Sport added!', 'Your new sport memory is now live.');
         }
       }
     } catch (error) {
       console.error('Error saving sport:', error);
-      alert('Failed to save sport');
+      toast.error('Save failed', 'Could not save the sport. Please try again.');
     } finally {
       setFormData({ title: '', description: '', date: '', imageUrl: '', category: 'Badminton' });
       setPreviewImage('');
@@ -140,11 +142,11 @@ export default function SportsManager() {
       const res = await fetch(`/api/sports/${id}`, { method: 'DELETE' });
       if (res.ok) {
         setSports(sports.filter(s => s.id !== id));
-        alert('Sport deleted successfully!');
+        toast.success('Sport deleted', 'The sport memory has been removed.');
       }
     } catch (error) {
       console.error('Error deleting sport:', error);
-      alert('Failed to delete sport');
+      toast.error('Delete failed', 'Could not delete the sport memory. Please try again.');
     }
   };
 

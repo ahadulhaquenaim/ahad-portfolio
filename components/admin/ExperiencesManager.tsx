@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useToast } from '@/components/ui/Toast';
 
 interface Experience {
   id: string;
@@ -14,6 +15,7 @@ interface Experience {
 }
 
 export default function ExperiencesManager() {
+  const toast = useToast();
   const [experiences, setExperiences] = useState<Experience[]>([]);
   const [isEditing, setIsEditing] = useState(false);
   const [currentExperience, setCurrentExperience] = useState<Experience | null>(null);
@@ -60,7 +62,7 @@ export default function ExperiencesManager() {
         if (res.ok) {
           const updated = await res.json();
           setExperiences(experiences.map(exp => exp.id === currentExperience.id ? updated : exp));
-          alert('Experience updated successfully!');
+          toast.success('Experience updated!', 'Your changes have been saved.');
         }
       } else {
         const res = await fetch('/api/experiences', {
@@ -72,12 +74,12 @@ export default function ExperiencesManager() {
         if (res.ok) {
           const newExp = await res.json();
           setExperiences([newExp, ...experiences]);
-          alert('Experience added successfully!');
+          toast.success('Experience added!', 'Your new experience is now live.');
         }
       }
     } catch (error) {
       console.error('Error saving experience:', error);
-      alert('Failed to save experience');
+      toast.error('Save failed', 'Could not save the experience. Please try again.');
     } finally {
       setFormData({ title: '', company: '', location: '', startDate: '', endDate: '', current: false, description: '' });
       setCurrentExperience(null);
@@ -107,11 +109,11 @@ export default function ExperiencesManager() {
       const res = await fetch(`/api/experiences/${id}`, { method: 'DELETE' });
       if (res.ok) {
         setExperiences(experiences.filter(exp => exp.id !== id));
-        alert('Experience deleted successfully!');
+        toast.success('Experience deleted', 'The experience has been removed.');
       }
     } catch (error) {
       console.error('Error deleting experience:', error);
-      alert('Failed to delete experience');
+      toast.error('Delete failed', 'Could not delete the experience. Please try again.');
     }
   };
 

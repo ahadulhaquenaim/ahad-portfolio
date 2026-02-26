@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useToast } from '@/components/ui/Toast';
 
 interface Resume {
   id: string;
@@ -10,6 +11,7 @@ interface Resume {
 }
 
 export default function ResumeManager() {
+  const toast = useToast();
   const [resumes, setResumes] = useState<Resume[]>([]);
   const [resumeUrl, setResumeUrl] = useState('');
   const [loading, setLoading] = useState(false);
@@ -38,7 +40,7 @@ export default function ResumeManager() {
     if (!file) return;
 
     if (file.type !== 'application/pdf' && !file.name.endsWith('.pdf')) {
-      alert('Please upload a PDF file');
+      toast.warning('Invalid file type', 'Please upload a PDF file only.');
       return;
     }
 
@@ -59,11 +61,11 @@ export default function ResumeManager() {
       if (saveRes.ok) {
         const newResume = await saveRes.json();
         setResumes([newResume]);
-        alert('Resume uploaded successfully!');
+        toast.success('Resume uploaded!', 'Your resume is now live on your portfolio.');
       }
     } catch (error) {
       console.error('Upload error:', error);
-      alert('Failed to upload resume');
+      toast.error('Upload failed', 'Could not upload the resume. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -72,7 +74,7 @@ export default function ResumeManager() {
   const handleUrlSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!resumeUrl) {
-      alert('Please enter a valid URL');
+      toast.warning('URL required', 'Please enter a valid resume URL.');
       return;
     }
 
@@ -88,11 +90,11 @@ export default function ResumeManager() {
         const newResume = await res.json();
         setResumes([newResume]);
         setResumeUrl('');
-        alert('Resume URL saved successfully!');
+        toast.success('Resume URL saved!', 'Your resume link is now live.');
       }
     } catch (error) {
       console.error('Error saving resume URL:', error);
-      alert('Failed to save resume URL');
+      toast.error('Save failed', 'Could not save the resume URL. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -115,11 +117,11 @@ export default function ResumeManager() {
       const res = await fetch('/api/resume', { method: 'DELETE' });
       if (res.ok) {
         setResumes([]);
-        alert('Resume deleted successfully!');
+        toast.success('Resume deleted', 'Your resume has been removed.');
       }
     } catch (error) {
       console.error('Error deleting resume:', error);
-      alert('Failed to delete resume');
+      toast.error('Delete failed', 'Could not delete the resume. Please try again.');
     } finally {
       setLoading(false);
     }

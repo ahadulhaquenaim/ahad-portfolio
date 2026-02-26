@@ -2,8 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { useToast } from '@/components/ui/Toast';
 
 export default function ImageUpload() {
+  const toast = useToast();
   const [imageUrl, setImageUrl] = useState('');
   const [previewUrl, setPreviewUrl] = useState('');
   const [loading, setLoading] = useState(false);
@@ -57,11 +59,11 @@ export default function ImageUpload() {
       if (saveRes.ok) {
         setPreviewUrl(url);
         setImageUrl(url);
-        alert('Profile image uploaded successfully!');
+        toast.success('Profile image uploaded!', 'Your new profile photo is now live.');
       }
     } catch (error) {
       console.error('Upload error:', error);
-      alert('Failed to upload image');
+      toast.error('Upload failed', 'Could not upload the image. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -81,11 +83,11 @@ export default function ImageUpload() {
 
       if (res.ok) {
         setPreviewUrl(imageUrl);
-        alert('Image URL saved successfully!');
+        toast.success('Image URL saved!', 'Your profile photo link is now live.');
       }
     } catch (error) {
       console.error('Error saving URL:', error);
-      alert('Failed to save image URL');
+      toast.error('Save failed', 'Could not save the image URL. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -109,11 +111,11 @@ export default function ImageUpload() {
       if (res.ok) {
         setImageUrl('');
         setPreviewUrl('');
-        alert('Image deleted successfully!');
+        toast.success('Image deleted', 'Your profile photo has been removed.');
       }
     } catch (error) {
       console.error('Delete error:', error);
-      alert('Failed to delete image');
+      toast.error('Delete failed', 'Could not delete the image. Please try again.');
     } finally {
       setLoading(false);
     }
