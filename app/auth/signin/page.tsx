@@ -10,7 +10,7 @@ function SignInContent() {
   const callbackUrl = searchParams.get('callbackUrl') || '/admin';
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-blue-50 to-indigo-100">
       <div className="max-w-md w-full space-y-8 p-10 bg-white rounded-xl shadow-2xl">
         <div className="text-center">
           <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
@@ -56,7 +56,7 @@ function SignInContent() {
 export default function SignIn() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
+      <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-blue-50 to-indigo-100">
         <div className="max-w-md w-full space-y-8 p-10 bg-white rounded-xl shadow-2xl">
           <div className="text-center">
             <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
