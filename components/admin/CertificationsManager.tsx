@@ -49,10 +49,10 @@ export default function CertificationsManager() {
 
     setLoading(true);
     try {
-      const uploadData = new FormData();
-      uploadData.append('file', file);
-
-      const res = await fetch('/api/upload', { method: 'POST', body: uploadData });
+      // Sanitize filename: remove spaces and special characters
+      const sanitizedFilename = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
+      const uploadUrl = `/api/upload?filename=${encodeURIComponent(sanitizedFilename)}`;
+      const res = await fetch(uploadUrl, { method: 'POST', body: file });
       const { url } = await res.json();
 
       setPreviewImage(url);
