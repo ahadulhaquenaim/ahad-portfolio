@@ -93,9 +93,9 @@ export default function SportsSection() {
             No sports memories added yet.
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-16">
             {categories.map((category, categoryIdx) => (
-              <div key={category.name} className="space-y-6">
+              <div key={category.name} className="space-y-6 px-2 lg:px-3">
                 {/* Category Header */}
                 <div className="text-center mb-8">
                   <h3 className={`text-3xl font-bold bg-gradient-to-r ${category.color} bg-clip-text text-transparent mb-2`}>
