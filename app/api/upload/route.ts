@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
 
     // Upload to Vercel Blob using request.body stream (App Router)
     const blob = await put(filename, request.body, {
-      access: 'public',
+      access: 'private',
     });
 
     return NextResponse.json({ url: blob.url });

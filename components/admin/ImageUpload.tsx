@@ -9,6 +9,20 @@ export default function ImageUpload() {
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
 
+  // Helper to get a displayable URL for private blobs
+  const resolveDisplayUrl = async (blobUrl: string): Promise<string> => {
+    if (blobUrl.includes('blob.vercel-storage.com')) {
+      try {
+        const res = await fetch(`/api/blob?url=${encodeURIComponent(blobUrl)}`);
+        const data = await res.json();
+        return data.downloadUrl || blobUrl;
+      } catch {
+        return blobUrl;
+      }
+    }
+    return blobUrl;
+  };
+
   // Fetch existing profile image on mount
   useEffect(() => {
     async function fetchProfileImage() {
@@ -16,8 +30,9 @@ export default function ImageUpload() {
         const res = await fetch('/api/profile-image');
         const data = await res.json();
         if (data?.imageUrl) {
-          setPreviewUrl(data.imageUrl);
           setImageUrl(data.imageUrl);
+          // Use displayUrl from API (already resolved) or resolve it
+          setPreviewUrl(data.displayUrl || data.imageUrl);
         }
       } catch (error) {
         console.error('Error fetching profile image:', error);
@@ -39,6 +54,12 @@ export default function ImageUpload() {
         method: 'POST',
         body: file,
       });
+
+      if (!uploadRes.ok) {
+        const errorData = await uploadRes.json();
+        throw new Error(errorData.error || 'Upload failed');
+      }
+
       const { url } = await uploadRes.json();
 
       // Save URL to database
@@ -49,7 +70,9 @@ export default function ImageUpload() {
       });
 
       if (saveRes.ok) {
-        setPreviewUrl(url);
+        // Resolve private blob URL to a displayable download URL
+        const displayUrl = await resolveDisplayUrl(url);
+        setPreviewUrl(displayUrl);
         setImageUrl(url);
         alert('Profile image uploaded successfully!');
       }
@@ -88,12 +111,12 @@ export default function ImageUpload() {
   const handleDelete = async () => {
     setLoading(true);
     try {
-      // Delete blob if it's a blob URL
-      if (previewUrl.includes('blob.vercel-storage.com')) {
+      // Delete blob if it's a blob URL (use imageUrl which is the stored blob URL)
+      if (imageUrl.includes('blob.vercel-storage.com')) {
         await fetch('/api/upload', {
           method: 'DELETE',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ url: previewUrl }),
+          body: JSON.stringify({ url: imageUrl }),
         });
       }
 

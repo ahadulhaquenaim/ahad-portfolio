@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma';
+import { getDownloadUrl } from '@vercel/blob';
 import { NextRequest, NextResponse } from 'next/server';
 
 // GET - Fetch the current profile image
@@ -7,7 +8,25 @@ export async function GET() {
     const profileImage = await prisma.profileImage.findFirst({
       orderBy: { createdAt: 'desc' },
     });
-    return NextResponse.json(profileImage);
+
+    if (!profileImage) {
+      return NextResponse.json(null);
+    }
+
+    // If it's a private blob URL, get a temporary download URL
+    let displayUrl = profileImage.imageUrl;
+    if (profileImage.imageUrl?.includes('blob.vercel-storage.com')) {
+      try {
+        displayUrl = await getDownloadUrl(profileImage.imageUrl);
+      } catch (e) {
+        console.error('Error getting download URL:', e);
+      }
+    }
+
+    return NextResponse.json({
+      ...profileImage,
+      displayUrl,
+    });
   } catch (error) {
     console.error('Error fetching profile image:', error);
     return NextResponse.json({ error: 'Failed to fetch profile image' }, { status: 500 });
