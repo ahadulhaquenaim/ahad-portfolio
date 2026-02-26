@@ -41,52 +41,136 @@ export default function SkillsSection() {
 
   if (loading) {
     return (
-      <section id="skills" className="py-20 bg-white dark:bg-gray-900">
+      <section id="skills" className="py-20 bg-gradient-to-br from-black via-gray-950 to-gray-900 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(16,185,129,0.1),transparent_50%)]"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="animate-pulse text-center text-gray-600 dark:text-gray-400">Loading skills...</div>
+          <div className="animate-pulse text-center text-emerald-400 text-xl relative z-10">Loading skills...</div>
         </div>
       </section>
     );
   }
 
   return (
-    <section id="skills" className="py-20 bg-white dark:bg-gray-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-            Skills & Technologies
+    <section id="skills" className="py-20 bg-gradient-to-br from-black via-gray-950 to-gray-900 relative overflow-hidden">
+      {/* Animated Background */}
+      <div className="absolute inset-0">
+        <div className="absolute top-20 left-20 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-20 right-20 w-72 h-72 bg-green-500/10 rounded-full blur-3xl animate-pulse delay-500"></div>
+      </div>
+
+      {/* Grid Pattern */}
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(16,185,129,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(16,185,129,0.03)_1px,transparent_1px)] bg-[size:50px_50px]"></div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="text-center mb-16 animate-fade-in-down">
+          <h2 className="text-5xl md:text-6xl font-bold mb-4">
+            <span className="bg-gradient-to-r from-emerald-400 via-green-300 to-emerald-400 bg-clip-text text-transparent">
+              Skills & Technologies
+            </span>
           </h2>
-          <p className="text-xl text-gray-600 dark:text-gray-400">
-            Technologies and tools I work with
-          </p>
+          <div className="flex items-center gap-3 justify-center">
+            <div className="h-1 w-16 bg-gradient-to-r from-emerald-500 to-transparent rounded"></div>
+            <p className="text-xl text-emerald-400/80">
+              Technologies and tools I work with
+            </p>
+            <div className="h-1 w-16 bg-gradient-to-l from-emerald-500 to-transparent rounded"></div>
+          </div>
         </div>
 
         {skills.length === 0 ? (
-          <div className="text-center text-gray-500 dark:text-gray-400">
+          <div className="text-center text-emerald-400/70 text-lg">
             No skills added yet.
           </div>
         ) : (
-          <div className="grid gap-8">
-            {Object.entries(groupedSkills).map(([category, categorySkills]) => (
-              <div key={category} className="bg-gray-50 dark:bg-gray-800 rounded-xl p-6 shadow-md">
-                <h3 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4 capitalize">
-                  {category}
-                </h3>
-                <div className="flex flex-wrap gap-3">
-                  {categorySkills.map((skill) => (
-                    <span
-                      key={skill.id}
-                      className="px-4 py-2 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full font-medium hover:bg-blue-200 dark:hover:bg-blue-800 transition-colors"
-                    >
-                      {skill.name}
-                    </span>
-                  ))}
+          <div className="grid gap-8 animate-fade-in-up">
+            {Object.entries(groupedSkills).map(([category, categorySkills], idx) => (
+              <div
+                key={category}
+                className="group relative"
+                style={{ animationDelay: `${idx * 0.1}s` }}
+              >
+                {/* Glowing Border */}
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 via-green-500 to-emerald-500 rounded-2xl blur opacity-40 group-hover:opacity-60 transition duration-1000 animate-pulse-glow"></div>
+
+                <div className="relative bg-gray-900/90 backdrop-blur-xl border border-emerald-500/20 rounded-2xl p-6 md:p-8 shadow-2xl">
+                  {/* Inner Glow */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 via-transparent to-green-500/5 rounded-2xl"></div>
+
+                  <div className="relative">
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="w-2 h-8 bg-gradient-to-b from-emerald-500 to-green-500 rounded-full"></div>
+                      <h3 className="text-2xl md:text-3xl font-bold text-emerald-400 capitalize">
+                        {category}
+                      </h3>
+                    </div>
+
+                    <div className="flex flex-wrap gap-3">
+                      {categorySkills.map((skill) => (
+                        <span
+                          key={skill.id}
+                          className="group/skill relative px-5 py-2.5 bg-gray-800/50 border border-emerald-500/30 text-emerald-300 rounded-full font-semibold hover:bg-emerald-500/20 hover:border-emerald-400 hover:text-emerald-200 transition-all duration-300 hover:scale-105 cursor-default shadow-sm hover:shadow-emerald-500/50"
+                        >
+                          <span className="relative z-10">{skill.name}</span>
+                          <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/0 via-emerald-500/10 to-emerald-500/0 opacity-0 group-hover/skill:opacity-100 rounded-full transition-opacity duration-300"></div>
+                        </span>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
         )}
       </div>
+
+      <style jsx>{`
+        @keyframes fade-in-down {
+          from {
+            opacity: 0;
+            transform: translateY(-20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes fade-in-up {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes pulse-glow {
+          0%, 100% {
+            opacity: 0.4;
+          }
+          50% {
+            opacity: 0.6;
+          }
+        }
+
+        .animate-fade-in-down {
+          animation: fade-in-down 0.8s ease-out;
+        }
+
+        .animate-fade-in-up {
+          animation: fade-in-up 0.8s ease-out 0.2s both;
+        }
+
+        .animate-pulse-glow {
+          animation: pulse-glow 3s ease-in-out infinite;
+        }
+
+        .delay-500 {
+          animation-delay: 0.5s;
+        }
+      `}</style>
     </section>
   );
 }
