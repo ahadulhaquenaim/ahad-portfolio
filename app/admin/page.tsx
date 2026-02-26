@@ -7,6 +7,7 @@ import BiosManager from '@/components/admin/BiosManager';
 import SkillsManager from '@/components/admin/SkillsManager';
 import ExperiencesManager from '@/components/admin/ExperiencesManager';
 import AchievementsManager from '@/components/admin/AchievementsManager';
+import SportsManager from '@/components/admin/SportsManager';
 import ResumeManager from '@/components/admin/ResumeManager';
 import CertificationsManager from '@/components/admin/CertificationsManager';
 
@@ -19,6 +20,7 @@ export default function AdminDashboard() {
     { id: 'skills', label: 'Skills' },
     { id: 'experiences', label: 'Experiences' },
     { id: 'achievements', label: 'Achievements' },
+    { id: 'sports', label: 'Sports' },
     { id: 'certifications', label: 'Certifications' },
     { id: 'resume', label: 'Resume' },
   ];
@@ -94,6 +96,7 @@ export default function AdminDashboard() {
           {activeTab === 'skills' && <SkillsManager />}
           {activeTab === 'experiences' && <ExperiencesManager />}
           {activeTab === 'achievements' && <AchievementsManager />}
+          {activeTab === 'sports' && <SportsManager />}
           {activeTab === 'certifications' && <CertificationsManager />}
           {activeTab === 'resume' && <ResumeManager />}
           </div>
