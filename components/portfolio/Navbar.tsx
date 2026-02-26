@@ -68,7 +68,7 @@ export default function Navbar() {
           <div className="shrink-0">
             <button
               onClick={() => scrollToSection('hero')}
-              className="group relative text-3xl font-bold bg-gradient-to-r from-emerald-400 via-green-400 to-emerald-500 dark:from-emerald-300 dark:via-green-300 dark:to-emerald-400 bg-clip-text text-transparent hover:scale-105 transition-transform duration-300 drop-shadow-[0_0_15px_rgba(16,185,129,0.6)]"
+              className="group relative text-3xl font-bold bg-gradient-to-r from-emerald-400 via-green-400 to-emerald-500 dark:from-emerald-300 dark:via-green-300 dark:to-emerald-400 bg-clip-text text-transparent hover:scale-105 transition-transform duration-300 drop-shadow-[0_0_15px_rgba(16,185,129,0.6)] cursor-pointer"
             >
               Portfolio
               <span className="absolute -bottom-1 left-0 w-0 h-1 bg-gradient-to-r from-emerald-400 via-green-500 to-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.8)] rounded-full group-hover:w-full transition-all duration-300"></span>
@@ -80,7 +80,7 @@ export default function Navbar() {
             <div className="ml-10 flex items-baseline space-x-2">
               <button
                 onClick={() => scrollToSection('about')}
-                className={`relative px-5 py-2.5 rounded-xl text-base font-bold transition-all duration-300 transform ${
+                className={`relative px-5 py-2.5 rounded-xl text-base font-bold transition-all duration-300 transform cursor-pointer ${
                   activeSection === 'about'
                     ? 'text-white bg-gradient-to-r from-emerald-500 via-green-500 to-emerald-600 shadow-[0_0_25px_rgba(16,185,129,0.6),0_0_40px_rgba(16,185,129,0.3)] scale-105 border border-emerald-400/50'
                     : 'text-gray-700 dark:text-gray-300 hover:text-emerald-500 dark:hover:text-emerald-400 hover:bg-gray-100 dark:hover:bg-gray-800/50 hover:shadow-[0_0_15px_rgba(16,185,129,0.3)] border border-transparent'
@@ -93,7 +93,7 @@ export default function Navbar() {
               </button>
               <button
                 onClick={() => scrollToSection('skills')}
-                className={`relative px-5 py-2.5 rounded-xl text-base font-bold transition-all duration-300 transform ${
+                className={`relative px-5 py-2.5 rounded-xl text-base font-bold transition-all duration-300 transform cursor-pointer ${
                   activeSection === 'skills'
                     ? 'text-white bg-gradient-to-r from-emerald-500 via-green-500 to-emerald-600 shadow-[0_0_25px_rgba(16,185,129,0.6),0_0_40px_rgba(16,185,129,0.3)] scale-105 border border-emerald-400/50'
                     : 'text-gray-700 dark:text-gray-300 hover:text-emerald-500 dark:hover:text-emerald-400 hover:bg-gray-100 dark:hover:bg-gray-800/50 hover:shadow-[0_0_15px_rgba(16,185,129,0.3)] border border-transparent'
@@ -106,7 +106,7 @@ export default function Navbar() {
               </button>
               <button
                 onClick={() => scrollToSection('experience')}
-                className={`relative px-5 py-2.5 rounded-xl text-base font-bold transition-all duration-300 transform ${
+                className={`relative px-5 py-2.5 rounded-xl text-base font-bold transition-all duration-300 transform cursor-pointer ${
                   activeSection === 'experience'
                     ? 'text-white bg-gradient-to-r from-emerald-500 via-green-500 to-emerald-600 shadow-[0_0_25px_rgba(16,185,129,0.6),0_0_40px_rgba(16,185,129,0.3)] scale-105 border border-emerald-400/50'
                     : 'text-gray-700 dark:text-gray-300 hover:text-emerald-500 dark:hover:text-emerald-400 hover:bg-gray-100 dark:hover:bg-gray-800/50 hover:shadow-[0_0_15px_rgba(16,185,129,0.3)] border border-transparent'
@@ -119,7 +119,7 @@ export default function Navbar() {
               </button>
               <button
                 onClick={() => scrollToSection('certifications')}
-                className={`relative px-5 py-2.5 rounded-xl text-base font-bold transition-all duration-300 transform ${
+                className={`relative px-5 py-2.5 rounded-xl text-base font-bold transition-all duration-300 transform cursor-pointer ${
                   activeSection === 'certifications'
                     ? 'text-white bg-gradient-to-r from-emerald-500 via-green-500 to-emerald-600 shadow-[0_0_25px_rgba(16,185,129,0.6),0_0_40px_rgba(16,185,129,0.3)] scale-105 border border-emerald-400/50'
                     : 'text-gray-700 dark:text-gray-300 hover:text-emerald-500 dark:hover:text-emerald-400 hover:bg-gray-100 dark:hover:bg-gray-800/50 hover:shadow-[0_0_15px_rgba(16,185,129,0.3)] border border-transparent'
@@ -132,7 +132,7 @@ export default function Navbar() {
               </button>
               <button
                 onClick={() => scrollToSection('achievements')}
-                className={`relative px-5 py-2.5 rounded-xl text-base font-bold transition-all duration-300 transform ${
+                className={`relative px-5 py-2.5 rounded-xl text-base font-bold transition-all duration-300 transform cursor-pointer ${
                   activeSection === 'achievements'
                     ? 'text-white bg-gradient-to-r from-emerald-500 via-green-500 to-emerald-600 shadow-[0_0_25px_rgba(16,185,129,0.6),0_0_40px_rgba(16,185,129,0.3)] scale-105 border border-emerald-400/50'
                     : 'text-gray-700 dark:text-gray-300 hover:text-emerald-500 dark:hover:text-emerald-400 hover:bg-gray-100 dark:hover:bg-gray-800/50 hover:shadow-[0_0_15px_rgba(16,185,129,0.3)] border border-transparent'
@@ -145,7 +145,7 @@ export default function Navbar() {
               </button>
               <Link
                 href="/admin"
-                className={`relative px-5 py-2.5 rounded-xl text-base font-bold transition-all duration-300 transform ${
+                className={`relative px-5 py-2.5 rounded-xl text-base font-bold transition-all duration-300 transform cursor-pointer ${
                   pathname === '/admin'
                     ? 'text-white bg-gradient-to-r from-emerald-500 via-green-500 to-emerald-600 shadow-[0_0_25px_rgba(16,185,129,0.6),0_0_40px_rgba(16,185,129,0.3)] scale-105 border border-emerald-400/50'
                     : 'text-gray-700 dark:text-gray-300 hover:text-emerald-500 dark:hover:text-emerald-400 hover:bg-gray-100 dark:hover:bg-gray-800/50 hover:shadow-[0_0_15px_rgba(16,185,129,0.3)] border border-transparent'
@@ -163,7 +163,7 @@ export default function Navbar() {
           <div className="md:hidden">
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="inline-flex items-center justify-center p-2.5 rounded-xl text-gray-700 dark:text-gray-300 hover:text-emerald-500 dark:hover:text-emerald-400 hover:bg-gray-100 dark:hover:bg-gray-800/50 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all duration-300 hover:shadow-[0_0_15px_rgba(16,185,129,0.3)] border border-transparent hover:border-emerald-500/30"
+              className="inline-flex items-center justify-center p-2.5 rounded-xl text-gray-700 dark:text-gray-300 hover:text-emerald-500 dark:hover:text-emerald-400 hover:bg-gray-100 dark:hover:bg-gray-800/50 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all duration-300 hover:shadow-[0_0_15px_rgba(16,185,129,0.3)] border border-transparent hover:border-emerald-500/30 cursor-pointer"
               aria-label="Toggle menu"
             >
               <svg
@@ -200,7 +200,7 @@ export default function Navbar() {
           <div className="px-2 pt-2 pb-3 space-y-2 sm:px-3">
             <button
               onClick={() => scrollToSection('about')}
-              className={`block w-full text-left px-5 py-3.5 rounded-xl text-lg font-bold transition-all duration-300 ${
+              className={`block w-full text-left px-5 py-3.5 rounded-xl text-lg font-bold transition-all duration-300 cursor-pointer ${
                 activeSection === 'about'
                   ? 'text-white bg-gradient-to-r from-emerald-500 via-green-500 to-emerald-600 shadow-[0_0_25px_rgba(16,185,129,0.6)] border-l-4 border-emerald-300'
                   : 'text-gray-700 dark:text-gray-300 hover:text-emerald-500 dark:hover:text-emerald-400 hover:bg-gray-100 dark:hover:bg-gray-800/50 border-l-4 border-transparent hover:shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:border-l-emerald-500'
@@ -210,7 +210,7 @@ export default function Navbar() {
             </button>
             <button
               onClick={() => scrollToSection('skills')}
-              className={`block w-full text-left px-5 py-3.5 rounded-xl text-lg font-bold transition-all duration-300 ${
+              className={`block w-full text-left px-5 py-3.5 rounded-xl text-lg font-bold transition-all duration-300 cursor-pointer ${
                 activeSection === 'skills'
                   ? 'text-white bg-gradient-to-r from-emerald-500 via-green-500 to-emerald-600 shadow-[0_0_25px_rgba(16,185,129,0.6)] border-l-4 border-emerald-300'
                   : 'text-gray-700 dark:text-gray-300 hover:text-emerald-500 dark:hover:text-emerald-400 hover:bg-gray-100 dark:hover:bg-gray-800/50 border-l-4 border-transparent hover:shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:border-l-emerald-500'
@@ -220,7 +220,7 @@ export default function Navbar() {
             </button>
             <button
               onClick={() => scrollToSection('experience')}
-              className={`block w-full text-left px-5 py-3.5 rounded-xl text-lg font-bold transition-all duration-300 ${
+              className={`block w-full text-left px-5 py-3.5 rounded-xl text-lg font-bold transition-all duration-300 cursor-pointer ${
                 activeSection === 'experience'
                   ? 'text-white bg-gradient-to-r from-emerald-500 via-green-500 to-emerald-600 shadow-[0_0_25px_rgba(16,185,129,0.6)] border-l-4 border-emerald-300'
                   : 'text-gray-700 dark:text-gray-300 hover:text-emerald-500 dark:hover:text-emerald-400 hover:bg-gray-100 dark:hover:bg-gray-800/50 border-l-4 border-transparent hover:shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:border-l-emerald-500'
@@ -230,7 +230,7 @@ export default function Navbar() {
             </button>
             <button
               onClick={() => scrollToSection('certifications')}
-              className={`block w-full text-left px-5 py-3.5 rounded-xl text-lg font-bold transition-all duration-300 ${
+              className={`block w-full text-left px-5 py-3.5 rounded-xl text-lg font-bold transition-all duration-300 cursor-pointer ${
                 activeSection === 'certifications'
                   ? 'text-white bg-gradient-to-r from-emerald-500 via-green-500 to-emerald-600 shadow-[0_0_25px_rgba(16,185,129,0.6)] border-l-4 border-emerald-300'
                   : 'text-gray-700 dark:text-gray-300 hover:text-emerald-500 dark:hover:text-emerald-400 hover:bg-gray-100 dark:hover:bg-gray-800/50 border-l-4 border-transparent hover:shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:border-l-emerald-500'
@@ -240,7 +240,7 @@ export default function Navbar() {
             </button>
             <button
               onClick={() => scrollToSection('achievements')}
-              className={`block w-full text-left px-5 py-3.5 rounded-xl text-lg font-bold transition-all duration-300 ${
+              className={`block w-full text-left px-5 py-3.5 rounded-xl text-lg font-bold transition-all duration-300 cursor-pointer ${
                 activeSection === 'achievements'
                   ? 'text-white bg-gradient-to-r from-emerald-500 via-green-500 to-emerald-600 shadow-[0_0_25px_rgba(16,185,129,0.6)] border-l-4 border-emerald-300'
                   : 'text-gray-700 dark:text-gray-300 hover:text-emerald-500 dark:hover:text-emerald-400 hover:bg-gray-100 dark:hover:bg-gray-800/50 border-l-4 border-transparent hover:shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:border-l-emerald-500'
@@ -250,7 +250,7 @@ export default function Navbar() {
             </button>
             <Link
               href="/admin"
-              className={`block w-full text-left px-5 py-3.5 rounded-xl text-lg font-bold transition-all duration-300 ${
+              className={`block w-full text-left px-5 py-3.5 rounded-xl text-lg font-bold transition-all duration-300 cursor-pointer ${
                 pathname === '/admin'
                   ? 'text-white bg-gradient-to-r from-emerald-500 via-green-500 to-emerald-600 shadow-[0_0_25px_rgba(16,185,129,0.6)] border-l-4 border-emerald-300'
                   : 'text-gray-700 dark:text-gray-300 hover:text-emerald-500 dark:hover:text-emerald-400 hover:bg-gray-100 dark:hover:bg-gray-800/50 border-l-4 border-transparent hover:shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:border-l-emerald-500'
