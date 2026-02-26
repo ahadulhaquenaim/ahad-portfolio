@@ -100,13 +100,13 @@ export default function ExperienceSection() {
                   <div className="relative">
                     <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-4 gap-4">
                       <div className="flex-1">
-                        <h3 className="text-2xl md:text-3xl font-bold text-emerald-400 mb-2">
+                        <h3 className="text-2xl md:text-3xl font-bold mb-2 bg-gradient-to-r from-blue-400 via-red-400 to-blue-400 bg-clip-text text-transparent drop-shadow-[0_0_10px_rgba(251,191,36,0.5)]">
                           {exp.title}
                         </h3>
                         <p className="text-lg md:text-xl text-green-300 font-semibold mb-1">
                           {exp.company}
                         </p>
-                        <p className="text-gray-400 flex items-center gap-2">
+                        <p className="text-gray-200 flex items-center gap-2">
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -122,7 +122,7 @@ export default function ExperienceSection() {
                     </div>
 
                     <div className="mt-4 pt-4 border-t border-emerald-500/20">
-                      <p className="text-gray-300 leading-relaxed whitespace-pre-line">
+                      <p className="text-white leading-relaxed whitespace-pre-line">
                         {exp.description}
                       </p>
                     </div>
