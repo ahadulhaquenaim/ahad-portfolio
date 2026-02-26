@@ -3,15 +3,19 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
   try {
-    const formData = await request.formData();
-    const file = formData.get('file') as File;
+    const { searchParams } = new URL(request.url);
+    const filename = searchParams.get('filename');
 
-    if (!file) {
+    if (!filename) {
+      return NextResponse.json({ error: 'No filename provided' }, { status: 400 });
+    }
+
+    if (!request.body) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 });
     }
 
-    // Upload to Vercel Blob
-    const blob = await put(file.name, file, {
+    // Upload to Vercel Blob using request.body stream (App Router)
+    const blob = await put(filename, request.body, {
       access: 'public',
     });
 

@@ -35,12 +35,9 @@ export default function ImageUpload() {
     setLoading(true);
     try {
       // Upload to Vercel Blob
-      const formData = new FormData();
-      formData.append('file', file);
-
-      const uploadRes = await fetch('/api/upload', {
+      const uploadRes = await fetch(`/api/upload?filename=${encodeURIComponent(file.name)}`, {
         method: 'POST',
-        body: formData,
+        body: file,
       });
       const { url } = await uploadRes.json();
 
