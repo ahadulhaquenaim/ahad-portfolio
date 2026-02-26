@@ -159,7 +159,7 @@ export default function SportsSection() {
 
                             <div className={`h-0.5 w-12 bg-gradient-to-r ${category.color} rounded-full mb-3`}></div>
 
-                            <p className="text-gray-300 text-sm leading-relaxed">
+                            <p className="text-gray-100 text-sm leading-relaxed">
                               {sport.description}
                             </p>
                           </div>
