@@ -38,8 +38,10 @@ export default function AboutSection() {
 
             <div className="relative">
               <p className="text-lg md:text-xl text-gray-300 leading-relaxed mb-6">
-                This section provides additional context about my journey, interests, and what drives me in my professional career.
-                The bio information from the hero section gives you an overview, and this space can be used to elaborate further.
+                I am a dedicated Software Engineer with a strong passion for building reliable, scalable, and user-friendly applications. 
+                I enjoy solving complex problems and turning ideas into efficient digital solutions through clean and maintainable code. 
+                My focus is on continuous learning, improving development practices, and delivering high-quality software. 
+                I value collaboration, adaptability, and creating technology that makes a meaningful impact.
               </p>
 
               {/* Decorative Quote */}
