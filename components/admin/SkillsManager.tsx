@@ -5,20 +5,18 @@ import { useState } from 'react';
 interface Skill {
   id: string;
   name: string;
-  level: string;
   category: string;
 }
 
 export default function SkillsManager() {
   const [skills, setSkills] = useState<Skill[]>([
-    { id: '1', name: 'React', level: 'Expert', category: 'Frontend' },
-    { id: '2', name: 'TypeScript', level: 'Advanced', category: 'Language' },
+    { id: '1', name: 'React', category: 'Frontend' },
+    { id: '2', name: 'TypeScript', category: 'Language' },
   ]);
   const [isEditing, setIsEditing] = useState(false);
   const [currentSkill, setCurrentSkill] = useState<Skill | null>(null);
   const [formData, setFormData] = useState({
     name: '',
-    level: 'Beginner',
     category: '',
   });
 
@@ -53,7 +51,6 @@ export default function SkillsManager() {
     setCurrentSkill(skill);
     setFormData({
       name: skill.name,
-      level: skill.level,
       category: skill.category,
     });
     setIsEditing(true);
@@ -67,7 +64,7 @@ export default function SkillsManager() {
   };
 
   const handleCancel = () => {
-    setFormData({ name: '', level: 'Beginner', category: '' });
+    setFormData({ name: '', category: '' });
     setCurrentSkill(null);
     setIsEditing(false);
   };
@@ -107,23 +104,6 @@ export default function SkillsManager() {
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="e.g., JavaScript, Python, etc."
             />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Proficiency Level *
-            </label>
-            <select
-              required
-              value={formData.level}
-              onChange={(e) => setFormData({ ...formData, level: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            >
-              <option value="Beginner">Beginner</option>
-              <option value="Intermediate">Intermediate</option>
-              <option value="Advanced">Advanced</option>
-              <option value="Expert">Expert</option>
-            </select>
           </div>
 
           <div>
@@ -174,9 +154,6 @@ export default function SkillsManager() {
                   <div className="flex-1">
                     <h4 className="text-lg font-semibold text-gray-900">{skill.name}</h4>
                     <div className="flex items-center space-x-4 mt-2">
-                      <span className="text-sm text-gray-600">
-                        <span className="font-medium">Level:</span> {skill.level}
-                      </span>
                       <span className="text-sm text-gray-600">
                         <span className="font-medium">Category:</span> {skill.category}
                       </span>

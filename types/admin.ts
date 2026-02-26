@@ -6,10 +6,15 @@ export interface ProfileImage {
   uploadedDate: string;
 }
 
+export interface Bio {
+  id: string;
+  title: string;
+  content: string;
+}
+
 export interface Skill {
   id: string;
   name: string;
-  level: 'Beginner' | 'Intermediate' | 'Advanced' | 'Expert';
   category: string;
 }
 
@@ -32,6 +37,15 @@ export interface Achievement {
   imageUrl: string;
 }
 
+export interface Certification {
+  id: string;
+  title: string;
+  issuer: string;
+  date: string;
+  credentialUrl: string;
+  imageUrl: string;
+}
+
 export interface Resume {
   id: string;
   fileName: string;
@@ -42,7 +56,6 @@ export interface Resume {
 // Form data types for components
 export interface SkillFormData {
   name: string;
-  level: string;
   category: string;
 }
 
@@ -61,4 +74,17 @@ export interface AchievementFormData {
   description: string;
   date: string;
   imageUrl: string;
+}
+
+export interface CertificationFormData {
+  title: string;
+  issuer: string;
+  date: string;
+  credentialUrl: string;
+  imageUrl: string;
+}
+
+export interface BioFormData {
+  title: string;
+  content: string;
 }
