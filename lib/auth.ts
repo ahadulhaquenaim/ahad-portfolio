@@ -12,6 +12,11 @@ export const authOptions: NextAuthOptions = {
     signIn: "/auth/signin",
   },
   callbacks: {
+    async signIn({ user }) {
+      // Only allow your specific email to sign in
+      const allowedEmail = process.env.ALLOWED_EMAIL;
+      return user.email === allowedEmail;
+    },
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.sub as string;
