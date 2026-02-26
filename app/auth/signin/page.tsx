@@ -3,8 +3,9 @@
 import { signIn } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import { Suspense } from 'react';
 
-export default function SignIn() {
+function SignInContent() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl') || '/admin';
 
@@ -49,5 +50,23 @@ export default function SignIn() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function SignIn() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
+        <div className="max-w-md w-full space-y-8 p-10 bg-white rounded-xl shadow-2xl">
+          <div className="text-center">
+            <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
+              Loading...
+            </h2>
+          </div>
+        </div>
+      </div>
+    }>
+      <SignInContent />
+    </Suspense>
   );
 }
