@@ -36,8 +36,8 @@ export default function SkillsSection() {
 
   // Sort categories by the oldest skill's creation date
   const sortedCategories = Object.entries(groupedSkills).sort(([, skillsA], [, skillsB]) => {
-    const oldestA = new Date(skillsA[0].createdAt).getTime();
-    const oldestB = new Date(skillsB[0].createdAt).getTime();
+    const oldestA = new Date(skillsA[0].createdAt || 0).getTime();
+    const oldestB = new Date(skillsB[0].createdAt || 0).getTime();
     return oldestA - oldestB; // Oldest first
   });
 
