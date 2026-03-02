@@ -1,6 +1,22 @@
 import { put, del } from '@vercel/blob';
 import { NextRequest, NextResponse } from 'next/server';
 
+// Generate a unique filename by adding timestamp and random string
+function generateUniqueFilename(originalFilename: string): string {
+  const timestamp = Date.now();
+  const randomString = Math.random().toString(36).substring(2, 8);
+  const lastDotIndex = originalFilename.lastIndexOf('.');
+  
+  if (lastDotIndex === -1) {
+    // No extension
+    return `${originalFilename}-${timestamp}-${randomString}`;
+  }
+  
+  const name = originalFilename.substring(0, lastDotIndex);
+  const extension = originalFilename.substring(lastDotIndex);
+  return `${name}-${timestamp}-${randomString}${extension}`;
+}
+
 export async function POST(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -14,8 +30,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 });
     }
 
+    // Generate unique filename to avoid duplicates
+    const uniqueFilename = generateUniqueFilename(filename);
+
     // Upload to Vercel Blob using request.body stream (App Router)
-    const blob = await put(filename, request.body, {
+    const blob = await put(uniqueFilename, request.body, {
       access: 'public',
     });
 
