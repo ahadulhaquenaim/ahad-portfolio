@@ -3,14 +3,7 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useToast } from '@/components/ui/Toast';
-
-interface Achievement {
-  id: string;
-  title: string;
-  description: string;
-  date: string;
-  imageUrl: string;
-}
+import { Achievement } from '@/types/admin';
 
 export default function AchievementsManager() {
   const toast = useToast();

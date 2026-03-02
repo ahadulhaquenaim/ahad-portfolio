@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useToast } from '@/components/ui/Toast';
+import { Bio } from '@/types/admin';
 
 export default function BiosManager() {
   const toast = useToast();

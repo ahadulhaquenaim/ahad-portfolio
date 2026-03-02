@@ -2,15 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
-
-interface Certification {
-  id: string;
-  title: string;
-  issuer: string;
-  date: string;
-  credentialUrl: string;
-  imageUrl: string;
-}
+import { Certification } from '@/types/admin';
 
 export default function CertificationsSection() {
   const [certifications, setCertifications] = useState<Certification[]>([]);

@@ -2,15 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
-
-interface Sport {
-  id: string;
-  title: string;
-  description: string;
-  date: string;
-  imageUrl: string;
-  category: string;
-}
+import { Sport } from '@/types/admin';
 
 export default function SportsSection() {
   const [sports, setSports] = useState<Sport[]>([]);

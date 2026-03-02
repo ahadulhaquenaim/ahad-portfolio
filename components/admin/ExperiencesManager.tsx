@@ -2,17 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useToast } from '@/components/ui/Toast';
-
-interface Experience {
-  id: string;
-  title: string;
-  company: string;
-  location: string;
-  startDate: string;
-  endDate: string;
-  current: boolean;
-  description: string;
-}
+import { Experience } from '@/types/admin';
 
 export default function ExperiencesManager() {
   const toast = useToast();

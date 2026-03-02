@@ -16,6 +16,8 @@ export interface Skill {
   id: string;
   name: string;
   category: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface Experience {
@@ -53,6 +55,15 @@ export interface Resume {
   uploadedDate: string;
 }
 
+export interface Sport {
+  id: string;
+  title: string;
+  description: string;
+  date: string;
+  imageUrl: string;
+  category: string;
+}
+
 // Form data types for components
 export interface SkillFormData {
   name: string;
@@ -87,4 +98,12 @@ export interface CertificationFormData {
 export interface BioFormData {
   title: string;
   content: string;
+}
+
+export interface SportFormData {
+  title: string;
+  description: string;
+  date: string;
+  imageUrl: string;
+  category: string;
 }

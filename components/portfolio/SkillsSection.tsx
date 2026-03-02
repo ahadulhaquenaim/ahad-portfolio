@@ -1,14 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-
-interface Skill {
-  id: string;
-  name: string;
-  category: string;
-  createdAt: string;
-  updatedAt: string;
-}
+import { Skill } from '@/types/admin';
 
 export default function SkillsSection() {
   const [skills, setSkills] = useState<Skill[]>([]);

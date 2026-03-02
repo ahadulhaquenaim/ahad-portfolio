@@ -2,14 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
-
-interface Achievement {
-  id: string;
-  title: string;
-  description: string;
-  date: string;
-  imageUrl: string;
-}
+import { Achievement } from '@/types/admin';
 
 export default function AchievementsSection() {
   const [achievements, setAchievements] = useState<Achievement[]>([]);

@@ -3,15 +3,7 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useToast } from '@/components/ui/Toast';
-
-interface Certification {
-  id: string;
-  title: string;
-  issuer: string;
-  date: string;
-  credentialUrl: string;
-  imageUrl: string;
-}
+import { Certification } from '@/types/admin';
 
 export default function CertificationsManager() {
   const toast = useToast();

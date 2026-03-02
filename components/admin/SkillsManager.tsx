@@ -2,12 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useToast } from '@/components/ui/Toast';
-
-interface Skill {
-  id: string;
-  name: string;
-  category: string;
-}
+import { Skill } from '@/types/admin';
 
 export default function SkillsManager() {
   const toast = useToast();

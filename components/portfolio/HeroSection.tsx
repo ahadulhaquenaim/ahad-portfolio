@@ -2,25 +2,7 @@
 
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
-
-interface ProfileImage {
-  id: string;
-  imageUrl: string;
-  uploadedDate: string;
-}
-
-interface Bio {
-  id: string;
-  title: string;
-  content: string;
-}
-
-interface Resume {
-  id: string;
-  fileName: string;
-  fileUrl: string;
-  uploadedDate: string;
-}
+import { ProfileImage, Bio, Resume } from '@/types/admin';
 
 export default function HeroSection() {
   const [bio, setBio] = useState<Bio | null>(null);

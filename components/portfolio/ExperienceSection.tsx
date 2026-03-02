@@ -1,17 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-
-interface Experience {
-  id: string;
-  title: string;
-  company: string;
-  location: string;
-  startDate: string;
-  endDate: string;
-  current: boolean;
-  description: string;
-}
+import { Experience } from '@/types/admin';
 
 export default function ExperienceSection() {
   const [experiences, setExperiences] = useState<Experience[]>([]);

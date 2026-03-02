@@ -3,15 +3,7 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useToast } from '@/components/ui/Toast';
-
-interface Sport {
-  id: string;
-  title: string;
-  description: string;
-  date: string;
-  imageUrl: string;
-  category: string;
-}
+import { Sport } from '@/types/admin';
 
 export default function SportsManager() {
   const toast = useToast();

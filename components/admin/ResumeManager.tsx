@@ -2,13 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useToast } from '@/components/ui/Toast';
-
-interface Resume {
-  id: string;
-  fileName: string;
-  fileUrl: string;
-  uploadedDate: string;
-}
+import { Resume } from '@/types/admin';
 
 export default function ResumeManager() {
   const toast = useToast();
