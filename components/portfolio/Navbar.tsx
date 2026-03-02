@@ -156,19 +156,6 @@ export default function Navbar() {
                   <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-3/4 h-1 bg-gradient-to-r from-blue-400 via-orange-400 to-blue-500 rounded-full shadow-[0_0_12px_rgba(59,130,246,0.9)]" />
                 )}
               </button>
-              <Link
-                href="/admin"
-                className={`relative px-5 py-2.5 rounded-xl text-base font-bold transition-all duration-300 transform cursor-pointer ${
-                  pathname === '/admin'
-                    ? 'text-white bg-gradient-to-r from-emerald-500 via-green-500 to-emerald-600 shadow-[0_0_25px_rgba(16,185,129,0.6),0_0_40px_rgba(16,185,129,0.3)] scale-105 border border-emerald-400/50'
-                    : 'text-gray-700 dark:text-gray-300 hover:text-emerald-500 dark:hover:text-emerald-400 hover:bg-gray-100 dark:hover:bg-gray-800/50 hover:shadow-[0_0_15px_rgba(16,185,129,0.3)] border border-transparent'
-                }`}
-              >
-                Admin
-                {pathname === '/admin' && (
-                  <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-3/4 h-1 bg-gradient-to-r from-emerald-400 via-green-400 to-emerald-500 rounded-full shadow-[0_0_12px_rgba(16,185,129,0.9)]" />
-                )}
-              </Link>
             </div>
           </div>
 
@@ -271,16 +258,6 @@ export default function Navbar() {
             >
               Sports
             </button>
-            <Link
-              href="/admin"
-              className={`block w-full text-left px-5 py-3.5 rounded-xl text-lg font-bold transition-all duration-300 cursor-pointer ${
-                pathname === '/admin'
-                  ? 'text-white bg-gradient-to-r from-emerald-500 via-green-500 to-emerald-600 shadow-[0_0_25px_rgba(16,185,129,0.6)] border-l-4 border-emerald-300'
-                  : 'text-gray-700 dark:text-gray-300 hover:text-emerald-500 dark:hover:text-emerald-400 hover:bg-gray-100 dark:hover:bg-gray-800/50 border-l-4 border-transparent hover:shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:border-l-emerald-500'
-              }`}
-            >
-              Admin
-            </Link>
           </div>
         </div>
       )}
